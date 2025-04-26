@@ -4,7 +4,7 @@ const app = express()
 const PORT = 5000
 
 const allowedOrigins = [
-	'https://item-list-frontend.vercel.app/'
+	'https://item-list-frontend.vercel.app'
 ];
 
 app.use(cors({
