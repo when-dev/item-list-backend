@@ -3,7 +3,21 @@ const cors = require('cors')
 const app = express()
 const PORT = 5000
 
-app.use(cors())
+const allowedOrigins = [
+  'https://item-list-frontend-production.up.railway.app',
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 app.use(express.json())
 
 const ITEMS_COUNT = 1_000_000
