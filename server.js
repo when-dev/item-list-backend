@@ -8,19 +8,13 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+	origin: allowedOrigins,
+	credentials: true,
 }));
 
 app.use(express.json())
 
-const ITEMS_COUNT = 1_000_000
+const ITEMS_COUNT = 50_000
 
 let items = Array.from({ length: ITEMS_COUNT }, (_, i) => ({
 	id: i + 1,
