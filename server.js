@@ -14,7 +14,7 @@ app.use(cors({
 
 app.use(express.json())
 
-const ITEMS_COUNT = 50_000
+const ITEMS_COUNT = 1_000_000
 
 let items = Array.from({ length: ITEMS_COUNT }, (_, i) => ({
 	id: i + 1,
