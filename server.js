@@ -83,4 +83,9 @@ app.post('/api/items/select', (req, res) => {
 	res.status(200).send()
 })
 
+app.post('/api/items/reset-order', (req, res) => {
+  orderedItems = items.map(item => item.id); 
+  res.status(200).send();
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
