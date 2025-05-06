@@ -4,7 +4,8 @@ const app = express()
 const PORT = 5000
 
 const allowedOrigins = [
-	'https://item-list-frontend.vercel.app'
+	'https://item-list-frontend.vercel.app',
+	'http://localhost:3000',
 ];
 
 app.use(cors({
@@ -49,19 +50,16 @@ app.get('/api/items', (req, res) => {
 app.post('/api/items/order', (req, res) => {
 	const { orderedIds } = req.body
 
-	const newOrdered = []
+	let newOrder = orderedItems.slice()
 
-	let used = new Set(orderedIds)
+	newOrder = newOrder.filter(id => !orderedIds.includes(id))
 
-	newOrdered.push(...orderedIds)
+	const firstIndex = orderedItems.findIndex(id => id === orderedIds[0])
+	const insertAt = Math.max(firstIndex, 0)
 
-	orderedItems.forEach(id => {
-		if (!used.has(id)) {
-			newOrdered.push(id)
-		}
-	})
+	newOrder.splice(insertAt, 0, ...orderedIds)
 
-	orderedItems = newOrdered
+	orderedItems = newOrder
 
 	res.status(200).send()
 })
