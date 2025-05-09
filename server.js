@@ -6,12 +6,14 @@ const PORT = 5000
 const allowedOrigins = [
 	'https://item-list-frontend.vercel.app',
 	'http://localhost:3000',
-];
+]
 
-app.use(cors({
-	origin: allowedOrigins,
-	credentials: true,
-}));
+app.use(
+	cors({
+		origin: allowedOrigins,
+		credentials: true,
+	})
+)
 
 app.use(express.json())
 
@@ -48,18 +50,19 @@ app.get('/api/items', (req, res) => {
 })
 
 app.post('/api/items/order', (req, res) => {
-	const { orderedIds } = req.body
+	const { orderedIds, insertAfterId } = req.body
 
-	let newOrder = orderedItems.slice()
+	if (!Array.isArray(orderedIds) || typeof insertAfterId !== 'number') {
+		return res.status(400).send('Invalid payload')
+	}
 
-	newOrder = newOrder.filter(id => !orderedIds.includes(id))
+	const filteredOut = orderedItems.filter(id => !orderedIds.includes(id))
 
-	const firstIndex = orderedItems.findIndex(id => id === orderedIds[0])
-	const insertAt = Math.max(firstIndex, 0)
+	const insertAt = filteredOut.findIndex(id => id === insertAfterId)
+	const safeInsertAt = insertAt >= 0 ? insertAt : filteredOut.length
+	filteredOut.splice(safeInsertAt, 0, ...orderedIds)
 
-	newOrder.splice(insertAt, 0, ...orderedIds)
-
-	orderedItems = newOrder
+	orderedItems = filteredOut
 
 	res.status(200).send()
 })
@@ -82,8 +85,8 @@ app.post('/api/items/select', (req, res) => {
 })
 
 app.post('/api/items/reset-order', (req, res) => {
-  orderedItems = items.map(item => item.id); 
-  res.status(200).send();
-});
+	orderedItems = items.map(item => item.id)
+	res.status(200).send()
+})
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
